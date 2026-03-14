@@ -21,14 +21,21 @@ def _get_cors_origins() -> list[str]:
         "BACKEND_CORS_ORIGINS",
         "http://localhost:5173,http://localhost:5174,http://localhost:3000",
     )
-    return [origin.strip() for origin in raw.split(",") if origin.strip()]
+    origins: list[str] = []
+    for part in raw.split(","):
+        origin = part.strip().strip("\"'").rstrip("/")
+        if origin:
+            origins.append(origin)
+    return origins
 
 
 _API_KEY = os.environ.get("BACKEND_API_KEY")
+_CORS_ORIGIN_REGEX = os.environ.get("BACKEND_CORS_ORIGIN_REGEX", "").strip() or None
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_get_cors_origins(),
+    allow_origin_regex=_CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
