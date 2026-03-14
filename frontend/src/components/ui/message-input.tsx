@@ -204,7 +204,7 @@ export function MessageInput({
             onPaste={onPaste}
             onKeyDown={onKeyDown}
             className={cn(
-              "z-10 w-full grow resize-none rounded-2xl border border-input/90 bg-background/95 p-3.5 pr-28 text-sm ring-offset-background transition-[border,box-shadow] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(59,130,246,0.16)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+              "z-10 w-full grow resize-none rounded-2xl border border-input/90 bg-background/95 p-3.5 pr-28 text-base sm:text-sm ring-offset-background transition-[border,box-shadow] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(59,130,246,0.16)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
               showFileList && "pb-16",
               className
             )}
