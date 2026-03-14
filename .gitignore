@@ -12,6 +12,7 @@ frontend/.env.local
 
 # Build outputs
 frontend/dist/
+backend/chroma_store/
 
 # OS/editor
 .DS_Store

@@ -1,14 +1,43 @@
 import uuid
 import os
+import shutil
 
 import chromadb
 
 _VECTOR_DB_ENABLED = os.environ.get("VECTOR_DB_ENABLED", "true").strip().lower() == "true"
 
-# Persistent storage — data survives server restarts
-_db_path = os.path.join(os.path.dirname(__file__), "..", "chroma_store")
-client = chromadb.PersistentClient(path=os.path.abspath(_db_path)) if _VECTOR_DB_ENABLED else None
-collection = client.get_or_create_collection(name="rag_documents") if client else None
+def _resolve_db_path() -> str:
+    # Render containers may include stale repo files; default to /tmp there.
+    if os.environ.get("CHROMA_PERSIST_DIR"):
+        return os.path.abspath(os.environ["CHROMA_PERSIST_DIR"])
+
+    if os.environ.get("RENDER") == "true":
+        return "/tmp/chroma_store"
+
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_store"))
+
+
+def _init_chroma() -> tuple[chromadb.ClientAPI | None, any]:
+    if not _VECTOR_DB_ENABLED:
+        return None, None
+
+    db_path = _resolve_db_path()
+    os.makedirs(db_path, exist_ok=True)
+
+    try:
+        _client = chromadb.PersistentClient(path=db_path)
+        _collection = _client.get_or_create_collection(name="rag_documents")
+        return _client, _collection
+    except Exception:
+        # Recover from incompatible/corrupted persisted metadata by resetting store.
+        shutil.rmtree(db_path, ignore_errors=True)
+        os.makedirs(db_path, exist_ok=True)
+        _client = chromadb.PersistentClient(path=db_path)
+        _collection = _client.get_or_create_collection(name="rag_documents")
+        return _client, _collection
+
+
+client, collection = _init_chroma()
 
 
 def is_vector_store_enabled() -> bool:
