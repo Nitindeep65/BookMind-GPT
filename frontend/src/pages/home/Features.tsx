@@ -20,21 +20,21 @@ const FEATURES = [
 
 export function Features() {
   return (
-    <section id="features" className="py-24 bg-white">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="text-center mb-14">
+    <section id="features" className="py-16 sm:py-24 bg-white">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-10 sm:mb-14">
           <p className="text-[11px] font-bold uppercase tracking-widest text-blue-500 mb-3">Features</p>
-          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Built for deep reading</h2>
-          <p className="text-gray-500 mt-3 text-[15px] max-w-md mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Built for deep reading</h2>
+          <p className="text-gray-500 mt-3 text-sm sm:text-[15px] max-w-md mx-auto">
             Everything you need to extract knowledge from long documents — fast.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {FEATURES.map((f, i) => (
             <div
               key={i}
-              className="group p-6 rounded-2xl border border-gray-100 hover:border-blue-100 hover:shadow-lg hover:shadow-blue-50 transition-all duration-200 bg-white"
+              className="group p-5 sm:p-6 rounded-2xl border border-gray-100 hover:border-blue-100 hover:shadow-lg hover:shadow-blue-50 transition-all duration-200 bg-white"
             >
               <div className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors duration-200">
                 {f.icon}

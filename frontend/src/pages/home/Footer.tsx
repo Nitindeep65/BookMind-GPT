@@ -6,8 +6,8 @@ export function Footer() {
 
   return (
     <footer id="footer" className="bg-gray-950 text-gray-400">
-      <div className="max-w-6xl mx-auto px-6 pt-14 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10 border-b border-gray-800">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 sm:pt-14 pb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 pb-10 border-b border-gray-800">
 
           {/* Brand col */}
           <div className="col-span-1 md:col-span-1">
@@ -15,7 +15,7 @@ export function Footer() {
               <img src="/logo.png" alt="EasyRead" className="w-9 h-9 rounded object-contain" />
               <span className="text-white font-semibold text-[18px]">EasyRead</span>
             </div>
-            <p className="text-[12.5px] leading-relaxed text-gray-500 max-w-50">
+            <p className="text-[12.5px] leading-relaxed text-gray-500 max-w-full sm:max-w-50">
               AI-powered document reader. Upload, ask, and learn faster.
             </p>
             <div className="flex items-center gap-4 mt-5">
@@ -31,8 +31,8 @@ export function Footer() {
             <ul className="space-y-2.5 text-[13px]">
               <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
               <li><a href="#how-it-works" className="hover:text-white transition-colors">How it works</a></li>
-              <li><button onClick={() => navigate("/UploadDoc")} className="hover:text-white transition-colors">Upload Doc</button></li>
-              <li><button onClick={() => navigate("/Chat")} className="hover:text-white transition-colors">Chat</button></li>
+              <li><button onClick={() => navigate("/upload")} className="hover:text-white transition-colors">Upload Doc</button></li>
+              <li><button onClick={() => navigate("/chat")} className="hover:text-white transition-colors">Chat</button></li>
             </ul>
           </div>
 

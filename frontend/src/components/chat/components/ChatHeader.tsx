@@ -19,21 +19,21 @@ export function ChatHeader({
   hasMessages,
 }: ChatHeaderProps) {
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border/80 bg-background/80 px-6 py-3 backdrop-blur-md">
+    <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border/80 bg-background/80 px-3 py-2.5 sm:px-6 sm:py-3 backdrop-blur-md">
       {/* Sidebar trigger + Brand */}
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <SidebarTrigger className="text-muted-foreground hover:bg-accent hover:text-accent-foreground" />
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="BookMind GPT" className="h-10 w-10 rounded-lg object-contain" />
-          <div className="flex flex-col leading-none">
+        <div className="flex min-w-0 items-center gap-2">
+          <img src="/logo.png" alt="BookMind GPT" className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg object-contain" />
+          <div className="flex min-w-0 flex-col leading-none">
             <span className="text-sm font-semibold tracking-tight text-foreground">BookMind GPT</span>
-            <span className="text-[11px] text-muted-foreground">Document-grounded assistant</span>
+            <span className="hidden sm:block text-[11px] text-muted-foreground">Document-grounded assistant</span>
           </div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <ModeToggle />
 
         {/* Clear */}
@@ -60,7 +60,7 @@ export function ChatHeader({
         </Button>
 
         {/* Status badge */}
-        <div className="flex items-center gap-1.5 rounded-full border border-border/80 bg-card/80 px-2.5 py-1">
+        <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-border/80 bg-card/80 px-2.5 py-1">
           <span
             className={`h-1.5 w-1.5 rounded-full ${
               isGenerating ? "bg-amber-400 animate-pulse" : "bg-emerald-400"

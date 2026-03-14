@@ -196,7 +196,7 @@ function ChatPage() {
 
   return (
     <SidebarProvider>
-      <div className="relative flex h-screen w-full overflow-hidden bg-[radial-gradient(1100px_circle_at_20%_-10%,rgba(120,119,198,0.16),transparent_48%),radial-gradient(900px_circle_at_100%_0%,rgba(14,165,233,0.14),transparent_42%),var(--color-background)] text-foreground">
+      <div className="relative flex min-h-dvh w-full overflow-hidden bg-[radial-gradient(1100px_circle_at_20%_-10%,rgba(120,119,198,0.16),transparent_48%),radial-gradient(900px_circle_at_100%_0%,rgba(14,165,233,0.14),transparent_42%),var(--color-background)] text-foreground">
         <ChatSidebar
           conversations={conversations}
           activeId={activeId}

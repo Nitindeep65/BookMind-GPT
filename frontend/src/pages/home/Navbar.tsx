@@ -1,5 +1,6 @@
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { FileUp, MessageSquare, ScanText, Upload, Cpu, HelpCircle, Mail, Github, Twitter } from "lucide-react"
+import { FileUp, MessageSquare, ScanText, Upload, Cpu, HelpCircle, Mail, Github, Twitter, Menu, X } from "lucide-react"
 
 const NAV_LINKS = [
   {
@@ -33,14 +34,15 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const navigate = useNavigate()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/60">
-      <div className="max-w-6xl mx-auto px-6 h-15 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-15 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-          <img src="/logo.png" alt="BookMind GPT" className="w-10 h-10 rounded-lg object-contain" />
-          <span className="font-semibold text-[15px] tracking-tight text-gray-900">BookMind GPT</span>
+          <img src="/logo.png" alt="BookMind GPT" className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-contain" />
+          <span className="font-semibold text-sm sm:text-[15px] tracking-tight text-gray-900">BookMind GPT</span>
         </div>
 
         {/* Nav Links with hover dropdowns */}
@@ -92,13 +94,36 @@ export function Navbar() {
             Sign in
           </button>
           <button
-            onClick={() => navigate("/UploadDoc")}
-            className="text-[13.5px] font-semibold px-4 py-1.75 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors duration-150"
+            onClick={() => navigate("/upload")}
+            className="hidden sm:inline-flex text-[13.5px] font-semibold px-4 py-1.75 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors duration-150"
           >
             Get started
           </button>
+          <button
+            onClick={() => setMobileOpen((v) => !v)}
+            className="inline-flex sm:hidden items-center justify-center rounded-lg border border-gray-200 p-2 text-gray-700 hover:bg-gray-100"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
         </div>
       </div>
+
+      {mobileOpen && (
+        <div className="sm:hidden border-t border-gray-200 bg-white/95 backdrop-blur px-4 py-3">
+          <div className="flex flex-col gap-2 text-sm">
+            <a href="#features" className="rounded-md px-2 py-2 text-gray-700 hover:bg-gray-100">Features</a>
+            <a href="#how-it-works" className="rounded-md px-2 py-2 text-gray-700 hover:bg-gray-100">How it works</a>
+            <a href="#footer" className="rounded-md px-2 py-2 text-gray-700 hover:bg-gray-100">Contact</a>
+            <button
+              onClick={() => navigate("/upload")}
+              className="mt-1 rounded-lg bg-gray-900 px-4 py-2.5 text-white font-semibold"
+            >
+              Get started
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   )
 }

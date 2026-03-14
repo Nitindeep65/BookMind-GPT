@@ -10,7 +10,9 @@ export function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
-        <div className="max-w-6xl mx-auto px-6"><div className="border-t border-gray-100" /></div>
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="border-t border-gray-100" />
+        </div>
         <Features />
         <HowItWorks />
       </main>

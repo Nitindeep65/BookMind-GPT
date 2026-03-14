@@ -61,12 +61,12 @@ function UploadDoc() {
     step === "uploading" ? 1 : step === "processing" ? 2 : step === "done" ? 3 : 0
 
   return (
-    <div className="relative min-h-screen bg-[radial-gradient(1200px_circle_at_15%_-20%,rgba(59,130,246,0.16),transparent_48%),radial-gradient(1000px_circle_at_100%_0%,rgba(16,185,129,0.12),transparent_44%),var(--color-background)] p-4 sm:p-6">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-1 pb-4 pt-1">
+    <div className="relative min-h-dvh bg-[radial-gradient(1200px_circle_at_15%_-20%,rgba(59,130,246,0.16),transparent_48%),radial-gradient(1000px_circle_at_100%_0%,rgba(16,185,129,0.12),transparent_44%),var(--color-background)] p-3 sm:p-6">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-1 pb-3 pt-1 sm:pb-4">
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate("/Home")}
+          onClick={() => navigate("/")}
           className="gap-1.5 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -75,8 +75,8 @@ function UploadDoc() {
         <ModeToggle />
       </div>
 
-      <div className="mx-auto w-full max-w-3xl rounded-3xl border border-border/70 bg-card/70 p-6 shadow-[0_10px_38px_rgba(2,6,23,0.12)] backdrop-blur-sm sm:p-8">
-        <div className="mb-6 space-y-2 text-center">
+      <div className="mx-auto w-full max-w-3xl rounded-2xl sm:rounded-3xl border border-border/70 bg-card/70 p-4 sm:p-8 shadow-[0_10px_38px_rgba(2,6,23,0.12)] backdrop-blur-sm">
+        <div className="mb-5 sm:mb-6 space-y-2 text-center">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             Upload Your Document
           </h2>
@@ -108,17 +108,19 @@ function UploadDoc() {
           <Stepper
             value={stepValue}
             orientation="horizontal"
+            className="mt-2"
             indicators={{
               loading: <Loader2 className="h-3.5 w-3.5 animate-spin" />,
               completed: <Check className="h-3.5 w-3.5" />,
               active: <span className="h-2 w-2 rounded-full bg-primary" />,
             }}
           >
-            <StepperNav>
+            <StepperNav className="w-full overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {STEPS.map((s, i) => (
                 <StepperItem
                   key={s.step}
                   step={s.step}
+                  className="min-w-[13rem] sm:min-w-0"
                   loading={
                     (s.step === 1 && step === "uploading") ||
                     (s.step === 2 && step === "processing")
@@ -150,7 +152,7 @@ function UploadDoc() {
         {/* Continue button appears when done */}
         {step === "done" && (
           <button
-            onClick={() => navigate("/Chat")}
+            onClick={() => navigate("/chat")}
             className="w-full rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground transition hover:bg-primary/90"
           >
             Continue to Chat →
