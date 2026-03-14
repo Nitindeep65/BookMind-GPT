@@ -1,6 +1,6 @@
 import os
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from openai import OpenAI
 from pydantic import BaseModel
 
@@ -47,13 +47,14 @@ class ChatResponse(BaseModel):
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 
 @router.post("/query", response_model=list[RetrievedChunk])
-async def query_documents(request: QueryRequest):
+async def query_documents(payload: QueryRequest, request: Request):
     """Return raw top-k retrieved chunks for a query (no LLM call)."""
-    if not request.query.strip():
+    if not payload.query.strip():
         raise HTTPException(status_code=400, detail="Query must not be empty.")
 
-    query_vector = create_embedding(request.query)
-    results = search_vectors(query_vector, top_k=request.top_k)
+    session_id = getattr(request.state, "session_id", None)
+    query_vector = create_embedding(payload.query)
+    results = search_vectors(query_vector, top_k=payload.top_k, session_id=session_id)
 
     return [
         RetrievedChunk(
@@ -67,7 +68,7 @@ async def query_documents(request: QueryRequest):
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(payload: ChatRequest, request: Request):
     """
     Full RAG chat:
       1. Embed the latest user message.
@@ -83,14 +84,15 @@ async def chat(request: ChatRequest):
 
     # Find the last user message to embed
     user_message = next(
-        (m.content for m in reversed(request.messages) if m.role == "user"), None
+        (m.content for m in reversed(payload.messages) if m.role == "user"), None
     )
     if not user_message:
         raise HTTPException(status_code=400, detail="No user message found.")
 
     # Retrieve context (optional when VECTOR_DB_ENABLED=false)
     query_vector = create_embedding(user_message)
-    results = search_vectors(query_vector, top_k=request.top_k)
+    session_id = getattr(request.state, "session_id", None)
+    results = search_vectors(query_vector, top_k=payload.top_k, session_id=session_id)
     context = "\n\n".join(r["text"] for r in results)
     sources = list({r["metadata"].get("source", "unknown") for r in results})
 
@@ -114,7 +116,7 @@ async def chat(request: ChatRequest):
         )
 
     llm_messages = [{"role": "system", "content": system_prompt}]
-    llm_messages += [{"role": m.role, "content": m.content} for m in request.messages]
+    llm_messages += [{"role": m.role, "content": m.content} for m in payload.messages]
 
     try:
         completion = _llm_client.chat.completions.create(

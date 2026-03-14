@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Request
 from pypdf import PdfReader
 
 from utils.chunking import chunk_text
@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.post("/upload")
-async def upload_pdf(file: UploadFile = File(...)):
+async def upload_pdf(request: Request, file: UploadFile = File(...)):
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are accepted.")
 
@@ -44,7 +44,8 @@ async def upload_pdf(file: UploadFile = File(...)):
 
         chunks = chunk_text(text)
         embeddings = embed_chunks(chunks)
-        store_vectors(embeddings, doc_name=file.filename)
+        session_id = getattr(request.state, "session_id", None)
+        store_vectors(embeddings, doc_name=file.filename, session_id=session_id)
 
         indexed = is_vector_store_enabled()
         message = (

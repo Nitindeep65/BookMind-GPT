@@ -44,6 +44,7 @@ export async function uploadPDF(file: File): Promise<UploadResult> {
   const res = await fetch(`${BASE_URL}/upload`, {
     method: "POST",
     body: formData,
+    credentials: "include",
   })
 
   return handleResponse<UploadResult>(res)
@@ -58,6 +59,7 @@ export async function sendChat(messages: ChatMessage[]): Promise<ChatResult> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ messages }),
+    credentials: "include",
   })
 
   return handleResponse<ChatResult>(res)
