@@ -1,14 +1,15 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { type Message } from "@/components/ui/chat-message"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { ChatHeader } from "./components/ChatHeader"
 import { ChatBody } from "./components/ChatBody"
 import { ChatSidebar, type Conversation } from "./components/ChatSidebar"
-import { simulateReply } from "./components/constants"
+import { sendChat } from "@/lib/api"
 
 type ConversationStore = Record<string, Message[]>
 
 function ChatPage() {
+  const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string } | null>(null)
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [store, setStore] = useState<ConversationStore>({})
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -16,6 +17,25 @@ function ChatPage() {
   const [input, setInput] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    const keys = ["user", "auth_user", "currentUser"]
+
+    for (const key of keys) {
+      const raw = localStorage.getItem(key)
+      if (!raw) continue
+
+      try {
+        const parsed = JSON.parse(raw) as { name?: string; email?: string }
+        if (parsed?.name || parsed?.email) {
+          setCurrentUser({ name: parsed.name, email: parsed.email })
+          return
+        }
+      } catch {
+        // Ignore malformed localStorage entries and continue fallback checks.
+      }
+    }
+  }, [])
 
   const messages: Message[] = activeId ? (store[activeId] ?? []) : []
 
@@ -53,9 +73,22 @@ function ChatPage() {
   )
 
   const sendReply = useCallback(
-    (userContent: string, convId: string) => {
+    async (userContent: string, convId: string, currentMessages: Message[]) => {
       setIsGenerating(true)
-      setTimeout(() => {
+
+      // Build the history to send (all messages + the new user one)
+      const history = [...currentMessages, { role: "user" as const, content: userContent }]
+        .filter((m) => m.role === "user" || m.role === "assistant")
+        .map((m) => ({ role: m.role as "user" | "assistant", content: m.content as string }))
+
+      try {
+        const result = await sendChat(history)
+
+        const sourceLine =
+          result.sources.length > 0
+            ? `\n\n---\n*Sources: ${result.sources.join(", ")}*`
+            : ""
+
         setStore((prev) => ({
           ...prev,
           [convId]: [
@@ -63,13 +96,28 @@ function ChatPage() {
             {
               id: (Date.now() + 1).toString(),
               role: "assistant",
-              content: simulateReply(userContent, "BookMind GPT"),
+              content: result.answer + sourceLine,
               createdAt: new Date(),
             },
           ],
         }))
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "Something went wrong."
+        setStore((prev) => ({
+          ...prev,
+          [convId]: [
+            ...(prev[convId] ?? []),
+            {
+              id: (Date.now() + 1).toString(),
+              role: "assistant",
+              content: `⚠️ ${errorMsg}`,
+              createdAt: new Date(),
+            },
+          ],
+        }))
+      } finally {
         setIsGenerating(false)
-      }, 1500)
+      }
     },
     []
   )
@@ -88,14 +136,16 @@ function ChatPage() {
         content: input,
         createdAt: new Date(),
       }
+      const currentMessages = store[convId] ?? []
       setStore((prev) => ({
         ...prev,
         [convId]: [...(prev[convId] ?? []), userMessage],
       }))
+      const captured = input
       setInput("")
-      sendReply(input, convId)
+      sendReply(captured, convId, currentMessages)
     },
-    [input, ensureConversation, sendReply]
+    [input, ensureConversation, sendReply, store]
   )
 
   const append = useCallback(
@@ -107,13 +157,14 @@ function ChatPage() {
         content: message.content,
         createdAt: new Date(),
       }
+      const currentMessages = store[convId] ?? []
       setStore((prev) => ({
         ...prev,
         [convId]: [...(prev[convId] ?? []), userMessage],
       }))
-      sendReply(message.content, convId)
+      sendReply(message.content, convId, currentMessages)
     },
-    [ensureConversation, sendReply]
+    [ensureConversation, sendReply, store]
   )
 
   const stop = useCallback(() => setIsGenerating(false), [])
@@ -145,15 +196,16 @@ function ChatPage() {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full bg-zinc-900 text-white overflow-hidden">
+      <div className="relative flex h-screen w-full overflow-hidden bg-[radial-gradient(1100px_circle_at_20%_-10%,rgba(120,119,198,0.16),transparent_48%),radial-gradient(900px_circle_at_100%_0%,rgba(14,165,233,0.14),transparent_42%),var(--color-background)] text-foreground">
         <ChatSidebar
           conversations={conversations}
           activeId={activeId}
           onSelect={(id) => { setActiveId(id); setInput(""); setIsGenerating(false) }}
           onNew={handleNewChat}
           onDelete={handleDeleteConversation}
+          currentUser={currentUser}
         />
-        <SidebarInset className="flex min-w-0 flex-1 flex-col bg-zinc-900">
+        <SidebarInset className="flex min-w-0 flex-1 flex-col bg-transparent">
           <ChatHeader
             isGenerating={isGenerating}
             copied={copied}

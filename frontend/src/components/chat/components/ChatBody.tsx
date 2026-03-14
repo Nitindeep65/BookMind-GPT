@@ -15,6 +15,13 @@ interface ChatBodyProps {
   isGenerating: boolean
 }
 
+const QUICK_START_PROMPTS = [
+  "Summarize the most important ideas from my uploaded document.",
+  "Give me 5 key takeaways with short explanations.",
+  "Create 10 interview questions from this material.",
+  "Explain this content in simple language for a beginner.",
+]
+
 export function ChatBody({
   messages,
   setMessages,
@@ -29,12 +36,24 @@ export function ChatBody({
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <div className="mx-auto flex w-full max-w-3xl flex-col overflow-hidden py-2 px-4 pb-4">
+      <div className="mx-auto flex w-full max-w-5xl flex-col overflow-hidden px-4 pb-4 pt-3 sm:px-6">
         {isEmpty && (
-          <div className="mb-4 flex items-center justify-center gap-1.5 pt-8">
-            <span className="text-xs font-medium uppercase tracking-widest text-zinc-500">
-              BookMind GPT
+          <div className="mb-5 flex flex-col items-center justify-center gap-3 pt-8">
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              BookMind GPT Workspace
             </span>
+            <div className="flex w-full max-w-3xl flex-wrap justify-center gap-2">
+              {QUICK_START_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  onClick={() => append({ role: "user", content: prompt })}
+                  className="rounded-full border border-border/80 bg-card/80 px-3 py-1.5 text-xs text-muted-foreground transition hover:bg-accent hover:text-accent-foreground"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -48,7 +67,7 @@ export function ChatBody({
           append={append}
           suggestions={[]}
           setMessages={setMessages}
-          className="h-full"
+          className="h-full rounded-2xl border border-border/70 bg-card/60 p-3 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm sm:p-4 dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
         />
       </div>
     </div>

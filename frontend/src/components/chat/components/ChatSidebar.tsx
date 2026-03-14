@@ -34,6 +34,10 @@ interface ChatSidebarProps {
   onSelect: (id: string) => void
   onNew: () => void
   onDelete: (id: string) => void
+  currentUser?: {
+    name?: string
+    email?: string
+  } | null
 }
 
 export function ChatSidebar({
@@ -42,7 +46,11 @@ export function ChatSidebar({
   onSelect,
   onNew,
   onDelete,
+  currentUser = null,
 }: ChatSidebarProps) {
+  const userInitial = currentUser?.name?.trim()?.charAt(0)?.toUpperCase() || "G"
+  const isLoggedIn = Boolean(currentUser?.name || currentUser?.email)
+
   const today = conversations.filter(
     (c) => new Date().toDateString() === c.createdAt.toDateString()
   )
@@ -51,24 +59,27 @@ export function ChatSidebar({
   )
 
   return (
-    <Sidebar collapsible="icon" className="bg-zinc-900 *:data-[slot=sidebar]:border-r-0" style={{ background: '#18181b' }}>
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-sidebar-border/70 bg-sidebar/85 *:data-[slot=sidebar]:border-r-0"
+    >
       {/* Brand / logo */}
-      <SidebarHeader className="bg-zinc-900 px-3 py-3">
+      <SidebarHeader className="px-3 py-3">
         <div className="flex items-center gap-2.5">
           <img src="/logo.png" alt="BookMind GPT" className="h-10 w-10 shrink-0 rounded-lg object-contain" />
-          <span className="truncate text-sm font-semibold text-white group-data-[collapsible=icon]:hidden">
+          <span className="truncate text-sm font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
             BookMind GPT
           </span>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="bg-zinc-900 px-2 py-2">
+      <SidebarContent className="px-2 py-2">
         {/* New chat button */}
         <div className="mb-2 px-1 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
           <Button
             onClick={onNew}
             variant="ghost"
-            className="w-full justify-start gap-2 text-xs font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+            className="w-full justify-start gap-2 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
           >
             <MessageSquarePlus className="h-4 w-4 shrink-0" />
             <span className="group-data-[collapsible=icon]:hidden">New chat</span>
@@ -78,7 +89,7 @@ export function ChatSidebar({
         {/* Today */}
         {today.length > 0 && (
           <SidebarGroup>
-            <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-zinc-600 group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground group-data-[collapsible=icon]:hidden">
               Today
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -88,15 +99,15 @@ export function ChatSidebar({
                     <SidebarMenuButton
                       isActive={conv.id === activeId}
                       onClick={() => onSelect(conv.id)}
-                      className="group/item text-zinc-300 data-[active=true]:bg-zinc-800 data-[active=true]:text-white hover:bg-zinc-800 hover:text-white"
+                      className="group/item text-sidebar-foreground/80 data-[active=true]:bg-accent data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground"
                       tooltip={conv.title}
                     >
-                      <MessageSquare className="h-4 w-4 shrink-0 text-zinc-500" />
+                      <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <span className="truncate text-xs">{conv.title}</span>
                     </SidebarMenuButton>
                     <SidebarMenuAction
                       onClick={() => onDelete(conv.id)}
-                      className="opacity-0 group-hover/item:opacity-100 text-zinc-600 hover:text-red-400 group-data-[collapsible=icon]:hidden"
+                      className="text-muted-foreground opacity-0 group-hover/item:opacity-100 hover:text-destructive group-data-[collapsible=icon]:hidden"
                       showOnHover
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -111,7 +122,7 @@ export function ChatSidebar({
         {/* Older */}
         {older.length > 0 && (
           <SidebarGroup>
-            <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-zinc-600 group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground group-data-[collapsible=icon]:hidden">
               Earlier
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -121,15 +132,15 @@ export function ChatSidebar({
                     <SidebarMenuButton
                       isActive={conv.id === activeId}
                       onClick={() => onSelect(conv.id)}
-                      className="group/item text-zinc-300 data-[active=true]:bg-zinc-800 data-[active=true]:text-white hover:bg-zinc-800 hover:text-white"
+                      className="group/item text-sidebar-foreground/80 data-[active=true]:bg-accent data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground"
                       tooltip={conv.title}
                     >
-                      <MessageSquare className="h-4 w-4 shrink-0 text-zinc-500" />
+                      <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <span className="truncate text-xs">{conv.title}</span>
                     </SidebarMenuButton>
                     <SidebarMenuAction
                       onClick={() => onDelete(conv.id)}
-                      className="opacity-0 group-hover/item:opacity-100 text-zinc-600 hover:text-red-400 group-data-[collapsible=icon]:hidden"
+                      className="text-muted-foreground opacity-0 group-hover/item:opacity-100 hover:text-destructive group-data-[collapsible=icon]:hidden"
                       showOnHover
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -143,75 +154,96 @@ export function ChatSidebar({
 
         {conversations.length === 0 && (
           <div className="mt-8 flex flex-col items-center gap-2 text-center group-data-[collapsible=icon]:hidden">
-            <MessageSquare className="h-8 w-8 text-zinc-700" />
-            <p className="text-xs text-zinc-600">No conversations yet</p>
+            <MessageSquare className="h-8 w-8 text-muted-foreground/70" />
+            <p className="text-xs text-muted-foreground">No conversations yet</p>
           </div>
         )}
       </SidebarContent>
 
-      <SidebarFooter className="bg-zinc-900 p-2">
+      <SidebarFooter className="p-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                  className="h-auto py-2 hover:bg-zinc-800 data-[state=open]:bg-zinc-800"
+                  className="h-auto py-2 hover:bg-accent data-[state=open]:bg-accent"
                   tooltip="Profile"
                 >
                   {/* Avatar */}
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-700 text-xs font-bold text-white">
-                    N
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {userInitial}
                   </div>
                   <div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
-                    <span className="truncate text-xs font-semibold text-zinc-200">Nitin</span>
-                    <span className="truncate text-[10px] text-zinc-500">nitin@example.com</span>
+                    <span className="truncate text-xs font-semibold text-foreground">
+                      {isLoggedIn ? currentUser?.name : "Guest session"}
+                    </span>
+                    {isLoggedIn && currentUser?.email ? (
+                      <span className="truncate text-[10px] text-muted-foreground">{currentUser.email}</span>
+                    ) : null}
                   </div>
-                  <ChevronsUpDown className="ml-auto h-3.5 w-3.5 shrink-0 text-zinc-500 group-data-[collapsible=icon]:hidden" />
+                  <ChevronsUpDown className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
                 align="start"
-                className="w-56 border-zinc-800 bg-zinc-900 text-zinc-200"
+                className="w-56"
               >
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex items-center gap-2.5 py-1">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-700 text-sm font-bold text-white">
-                      N
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                      {userInitial}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-xs font-semibold text-zinc-100">Nitin</span>
-                      <span className="text-[11px] text-zinc-500">nittin@example.com</span>
+                      <span className="text-xs font-semibold text-foreground">
+                        {isLoggedIn ? currentUser?.name : "Guest session"}
+                      </span>
+                      {isLoggedIn && currentUser?.email ? (
+                        <span className="text-[11px] text-muted-foreground">{currentUser.email}</span>
+                      ) : null}
                     </div>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-zinc-800" />
-                <DropdownMenuItem className="gap-2 text-xs text-zinc-300 hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white cursor-pointer">
-                  <User className="h-3.5 w-3.5" />
-                  View profile
-                </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2 text-xs cursor-pointer font-medium text-indigo-400 hover:bg-zinc-800 focus:bg-zinc-800 focus:text-indigo-300">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Upgrade plan
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-zinc-800" />
-                <DropdownMenuItem className="gap-2 text-xs text-zinc-300 hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white cursor-pointer">
+                <DropdownMenuSeparator />
+                {isLoggedIn ? (
+                  <>
+                    <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
+                      <User className="h-3.5 w-3.5" />
+                      View profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-2 text-xs font-medium text-primary">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Upgrade plan
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Sign in to save chats
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
                   <Palette className="h-3.5 w-3.5" />
                   Personalization
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2 text-xs text-zinc-300 hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white cursor-pointer">
+                <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
                   <Settings className="h-3.5 w-3.5" />
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2 text-xs text-zinc-300 hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white cursor-pointer">
+                <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
                   <HelpCircle className="h-3.5 w-3.5" />
                   Help & support
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-zinc-800" />
-                <DropdownMenuItem className="gap-2 text-xs text-red-400 hover:bg-zinc-800 focus:bg-zinc-800 focus:text-red-400 cursor-pointer">
-                  <LogOut className="h-3.5 w-3.5" />
-                  Sign out
-                </DropdownMenuItem>
+                {isLoggedIn ? (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer gap-2 text-xs" variant="destructive">
+                      <LogOut className="h-3.5 w-3.5" />
+                      Sign out
+                    </DropdownMenuItem>
+                  </>
+                ) : null}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

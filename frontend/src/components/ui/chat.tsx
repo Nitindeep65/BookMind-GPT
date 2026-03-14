@@ -193,7 +193,7 @@ export function Chat({
 
   return (
     <ChatContainer className={className}>
-      {isEmpty && append && suggestions ? (
+      {isEmpty && append && suggestions && suggestions.length > 0 ? (
         <PromptSuggestions
           label="Try these prompts ✨"
           append={append}
