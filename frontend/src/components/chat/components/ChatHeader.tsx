@@ -19,12 +19,12 @@ export function ChatHeader({
   hasMessages,
 }: ChatHeaderProps) {
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border/80 bg-background/80 px-3 py-2.5 sm:px-6 sm:py-3 backdrop-blur-md">
+    <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border/70 bg-background/85 px-3 py-2.5 sm:px-6 sm:py-3 backdrop-blur-md">
       {/* Sidebar trigger + Brand */}
       <div className="flex min-w-0 items-center gap-2">
         <SidebarTrigger className="text-muted-foreground hover:bg-accent hover:text-accent-foreground" />
         <div className="flex min-w-0 items-center gap-2">
-          <img src="/logo.png" alt="BookMind GPT" className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg object-contain" />
+          <img src="/logo.png" alt="BookMind GPT" className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl object-contain ring-1 ring-border/60" />
           <div className="flex min-w-0 flex-col leading-none">
             <span className="text-sm font-semibold tracking-tight text-foreground">BookMind GPT</span>
             <span className="hidden sm:block text-[11px] text-muted-foreground">Document-grounded assistant</span>
@@ -34,6 +34,11 @@ export function ChatHeader({
 
       {/* Controls */}
       <div className="flex items-center gap-1 sm:gap-2">
+        <div className="hidden md:flex items-center gap-1.5 rounded-full border border-border/70 bg-card/70 px-2.5 py-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+          <span className="text-[11px] font-medium text-muted-foreground">PDF Mode</span>
+        </div>
+
         <ModeToggle />
 
         {/* Clear */}

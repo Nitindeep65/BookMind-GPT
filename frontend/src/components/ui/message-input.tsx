@@ -36,7 +36,7 @@ type MessageInputProps =
   | MessageInputWithAttachmentsProps
 
 export function MessageInput({
-  placeholder = "Ask AI...",
+  placeholder = "Ask a question about your uploaded PDF...",
   className,
   onKeyDown: onKeyDownProp,
   submitOnEnter = true,
@@ -204,7 +204,7 @@ export function MessageInput({
             onPaste={onPaste}
             onKeyDown={onKeyDown}
             className={cn(
-              "z-10 w-full grow resize-none rounded-xl border border-input bg-background p-3 pr-24 text-sm ring-offset-background transition-[border] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+              "z-10 w-full grow resize-none rounded-2xl border border-input/90 bg-background/95 p-3.5 pr-28 text-sm ring-offset-background transition-[border,box-shadow] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(59,130,246,0.16)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
               showFileList && "pb-16",
               className
             )}
@@ -243,13 +243,13 @@ export function MessageInput({
         </div>
       </div>
 
-      <div className="absolute right-3 top-3 z-20 flex gap-2">
+      <div className="absolute right-3 top-3.5 z-20 flex gap-1.5 sm:gap-2">
         {props.allowAttachments && (
           <Button
             type="button"
             size="icon"
             variant="outline"
-            className="h-8 w-8"
+            className="h-8 w-8 rounded-xl"
             aria-label="Attach a file"
             onClick={async () => {
               const files = await showFileUploadDialog()
@@ -263,7 +263,7 @@ export function MessageInput({
           <Button
             type="button"
             variant="outline"
-            className={cn("h-8 w-8", isListening && "text-primary")}
+            className={cn("h-8 w-8 rounded-xl", isListening && "text-primary")}
             aria-label="Voice input"
             size="icon"
             onClick={toggleListening}
@@ -275,7 +275,7 @@ export function MessageInput({
           <Button
             type="button"
             size="icon"
-            className="h-8 w-8"
+            className="h-8 w-8 rounded-xl"
             aria-label="Stop generating"
             onClick={stop}
           >
@@ -285,7 +285,7 @@ export function MessageInput({
           <Button
             type="submit"
             size="icon"
-            className="h-8 w-8 transition-opacity"
+            className="h-8 w-8 rounded-xl transition-opacity"
             aria-label="Send message"
             disabled={props.value === "" || isGenerating}
           >
@@ -435,7 +435,7 @@ function RecordingControls({
   if (isRecording) {
     return (
       <div
-        className="absolute inset-[1px] z-50 overflow-hidden rounded-xl"
+        className="absolute inset-px z-50 overflow-hidden rounded-xl"
         style={{ height: textAreaHeight - 2 }}
       >
         <AudioVisualizer
@@ -450,7 +450,7 @@ function RecordingControls({
   if (isTranscribing) {
     return (
       <div
-        className="absolute inset-[1px] z-50 overflow-hidden rounded-xl"
+        className="absolute inset-px z-50 overflow-hidden rounded-xl"
         style={{ height: textAreaHeight - 2 }}
       >
         <TranscribingOverlay />

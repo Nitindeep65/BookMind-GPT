@@ -38,17 +38,26 @@ export function ChatBody({
     <div className="flex flex-1 overflow-hidden">
       <div className="mx-auto flex w-full max-w-5xl flex-col overflow-hidden px-2 pb-3 pt-2 sm:px-6 sm:pb-4 sm:pt-3">
         {isEmpty && (
-          <div className="mb-4 flex flex-col items-center justify-center gap-3 pt-5 sm:mb-5 sm:pt-8">
-            <span className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.16em] sm:tracking-[0.18em] text-muted-foreground">
-              Ask About Your Uploaded PDF
-            </span>
-            <div className="flex w-full max-w-3xl flex-wrap justify-center gap-2 px-1">
+          <div className="mb-4 rounded-2xl border border-border/70 bg-card/60 px-3 py-4 sm:mb-5 sm:px-5 sm:py-6">
+            <div className="mb-4 flex flex-col items-center justify-center gap-1.5 text-center sm:mb-5">
+              <span className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.16em] sm:tracking-[0.18em] text-muted-foreground">
+                Ask About Your Uploaded PDF
+              </span>
+              <h2 className="text-base sm:text-lg font-semibold tracking-tight text-foreground">
+                Start with a focused question
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Your answers are generated from the document you uploaded.
+              </p>
+            </div>
+
+            <div className="grid w-full gap-2 sm:gap-3 sm:grid-cols-2">
               {QUICK_START_PROMPTS.map((prompt) => (
                 <button
                   key={prompt}
                   type="button"
                   onClick={() => append({ role: "user", content: prompt })}
-                  className="rounded-full border border-border/80 bg-card/80 px-3 py-1.5 text-[11px] sm:text-xs text-muted-foreground transition hover:bg-accent hover:text-accent-foreground"
+                  className="rounded-xl border border-border/80 bg-background/70 px-3 py-2.5 text-left text-[12px] sm:text-[13px] text-muted-foreground transition hover:border-primary/40 hover:bg-accent hover:text-accent-foreground"
                 >
                   {prompt}
                 </button>
